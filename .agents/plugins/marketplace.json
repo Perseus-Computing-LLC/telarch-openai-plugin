@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "telarch",
+      "name": "app-6a5586fe76788191a23b6b2c873a44a6",
       "source": {
         "source": "local",
         "path": "./plugins/telarch"

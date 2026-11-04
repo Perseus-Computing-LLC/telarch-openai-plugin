@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "telarch",
+  "name": "app-6a5586fe76788191a23b6b2c873a44a6",
   "version": "0.1.0",
   "description": "Cognitive infrastructure for AI agents: Harpe 0/1 knapsack context budgeting, Kibisis epistemic memory conflict resolution & monotonic fencing leases, Argus RFC 8785 SHA-256 audit chains, and an interactive ChatGPT Inspector UI.",
   "author": {
