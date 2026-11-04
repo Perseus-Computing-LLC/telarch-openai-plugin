@@ -1,0 +1,32 @@
+{
+  "name": "perseus-telarch-plugins",
+  "interface": {
+    "displayName": "Perseus Computing \u2014 Telarch Suite"
+  },
+  "plugins": [
+    {
+      "name": "telarch",
+      "source": {
+        "source": "local",
+        "path": "./plugins/telarch"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
+      "name": "telarch-local",
+      "source": {
+        "source": "local",
+        "path": "./plugins/telarch-local"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

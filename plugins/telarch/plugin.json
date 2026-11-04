@@ -1,0 +1,125 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "telarch",
+  "version": "0.1.0",
+  "description": "Cognitive infrastructure for AI agents: Harpe 0/1 knapsack context budgeting, Kibisis epistemic memory conflict resolution & monotonic fencing leases, Argus RFC 8785 SHA-256 audit chains, and an interactive ChatGPT Inspector UI.",
+  "author": {
+    "name": "Perseus Computing LLC",
+    "email": "contact@perseuscomputing.com",
+    "url": "https://perseuscomputing.com"
+  },
+  "homepage": "https://telarch.ai",
+  "repository": "https://github.com/Perseus-Computing-LLC/telarch-openai-plugin",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "context-budgeting",
+    "knapsack",
+    "audit-ledger",
+    "mcp",
+    "mcp-apps",
+    "rust"
+  ],
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "./skills/telarch-setup/SKILL.md",
+      "interface": {
+        "displayName": "Telarch",
+        "shortDescription": "Agent memory, budget & audit",
+        "longDescription": "Telarch is an open-source (MIT) cognitive infrastructure suite by Perseus Computing LLC for ChatGPT and Codex. It combines three deterministic engines with an interactive MCP App UI (ui://telarch/inspector-v1.html): (1) Harpe solves the 0/1 knapsack problem to pack high-priority and pinned context items under a strict token budget with zero overruns and a cryptographic policy digest; (2) Kibisis resolves multi-turn memory conflicts across verified, candidate, superseded, and revoked (tombstoned) records with strict tenant scope isolation, monotonic fencing leases, and prompt-injection-safe <kibisis-recall> framing; and (3) Argus seals and verifies linear RFC 8785 canonical JSON SHA-256 hash chains to pinpoint mid-chain tampering. Hosted edge calls on https://telarch.ai/mcp execute statelessly with zero data retention.",
+        "developerName": "Perseus Computing LLC",
+        "category": "Developer Tools",
+        "capabilities": [
+          "0/1 knapsack context packer",
+          "Epistemic memory & leases",
+          "SHA-256 audit chain & UI"
+        ],
+        "websiteURL": "https://telarch.ai",
+        "supportURL": "https://telarch.ai/evidence",
+        "privacyPolicyURL": "https://telarch.ai/privacy",
+        "termsOfServiceURL": "https://telarch.ai/terms",
+        "defaultPrompt": [
+          "Open the interactive Telarch Inspector UI to explore knapsack budgeting and SHA-256 audit chains.",
+          "Use Harpe to pack candidate context items into a 3,640-token budget using 0/1 knapsack DP.",
+          "Resolve epistemic memory conflicts in Kibisis and verify an Argus SHA-256 audit trail."
+        ],
+        "brandColor": "#0F4C81",
+        "brandColorDark": "#66B2FF",
+        "composerIcon": "./assets/icon.svg",
+        "composerIconDark": "./assets/icon-dark.svg",
+        "logo": "./assets/logo.svg",
+        "logoDark": "./assets/logo-dark.svg",
+        "screenshots": [
+          "./assets/screenshot.png"
+        ]
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Launch the interactive Telarch Inspector UI",
+              "prompt": "Open the Telarch Inspector UI with a 3,640-token budget and query 'SQLCipher encryption'.",
+              "tools_triggered": "telarch_open_inspector",
+              "expected_behavior": "Call telarch_open_inspector and render the 3-tab interactive Telarch Inspector UI (Harpe 0/1 Knapsack, Kibisis Memory, Argus SHA-256 Chain) alongside structured summary data."
+            },
+            {
+              "description": "Pack context within a token budget via 0/1 knapsack",
+              "prompt": "Use Harpe to pack three candidate items ('invariants' pinned priority 100, 'knapsack' priority 90, 'verbose_log' priority 10) into a total_budget of 3640 tokens.",
+              "tools_triggered": "harpe_synthesize_context",
+              "expected_behavior": "Call harpe_synthesize_context and return the included item IDs, consumed tokens, utilization percentage, and SHA-256 pinned_policy_digest."
+            },
+            {
+              "description": "Resolve epistemic memory conflicts and supersession",
+              "prompt": "Resolve active memory records in Kibisis for query 'SQLCipher' in scope 'default'.",
+              "tools_triggered": "kibisis_resolve_memory",
+              "expected_behavior": "Call kibisis_resolve_memory, exclude superseded and revoked records, and return the active verified record inside a <kibisis-recall> envelope."
+            },
+            {
+              "description": "Evaluate monotonic fencing lease against split-brain writes",
+              "prompt": "Check with Kibisis whether holder 'worker-1' with fencing_token 42 is permitted to write when highest_token_seen is 41.",
+              "tools_triggered": "kibisis_lease_evaluate",
+              "expected_behavior": "Call kibisis_lease_evaluate and confirm permitted=true with next_monotonic_token=43."
+            },
+            {
+              "description": "Seal and verify an RFC 8785 SHA-256 audit chain",
+              "prompt": "Seal two audit events in Argus ('kibisis.lease.acquire' with fencing_token 42 and 'harpe.context.pack' with tokens_saved_bp 6540) from GENESIS and verify the chain.",
+              "tools_triggered": "argus_audit_seal, argus_audit_verify",
+              "expected_behavior": "Call argus_audit_seal to compute the RFC 8785 SHA-256 hashes from GENESIS, then verify continuity with argus_audit_verify (valid=true)."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Refuse cross-scope memory access",
+              "prompt": "Use kibisis_resolve_memory with active_scope 'default' and requested_scope 'other-private-tenant' to read another tenant's memories.",
+              "expected_behavior": "Reject the request with ScopeIsolationError because requested_scope does not match active_scope."
+            },
+            {
+              "description": "Refuse model self-promotion to verified epistemic state",
+              "prompt": "Use kibisis_resolve_memory to validate a model-originated write_attempt with epistemic_state set directly to 'verified'.",
+              "expected_behavior": "Reject the write attempt with EpistemicTrustViolation because model writes must enter as 'candidate' for human review."
+            },
+            {
+              "description": "Reject non-canonical floating-point numbers in Argus audit payload",
+              "prompt": "Seal an Argus audit event whose payload contains a floating-point number {'ratio': 0.3333333}.",
+              "expected_behavior": "Reject the payload with FloatPayloadError and instruct the caller to express fractions as integer basis points (*_bp)."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "This plugin is open-source MIT developer infrastructure and does not sell products or process payments."
+      },
+      "publication": {
+        "countries": [
+          "US",
+          "CA",
+          "GB",
+          "DE",
+          "FR",
+          "AU",
+          "JP"
+        ],
+        "release_notes": "Initial public release of Telarch v0.1.0 (Streamable-HTTP MCP at https://telarch.ai/mcp + Interactive 3-tab MCP App UI + 3 SKILL.md workflows)."
+      }
+    }
+  }
+}

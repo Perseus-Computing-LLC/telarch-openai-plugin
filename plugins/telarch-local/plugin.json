@@ -1,0 +1,120 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "telarch-local",
+  "version": "0.1.0",
+  "description": "Local-first cognitive infrastructure for AI agents: Kibisis encrypted memory vault with monotonic fencing leases, Harpe microsecond 0/1 knapsack context budgeting, and Argus tamper-evident SHA-256 audit ledger.",
+  "author": {
+    "name": "Perseus Computing LLC",
+    "email": "contact@perseuscomputing.com",
+    "url": "https://perseuscomputing.com"
+  },
+  "homepage": "https://telarch.ai",
+  "repository": "https://github.com/Perseus-Computing-LLC",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "context-budgeting",
+    "knapsack",
+    "audit-ledger",
+    "mcp",
+    "sqlcipher",
+    "rust"
+  ],
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "onboardingSkill": "./skills/telarch-setup/SKILL.md",
+      "interface": {
+        "displayName": "Telarch Local Vault",
+        "shortDescription": "Local SQLCipher memory & audit",
+        "longDescription": "Telarch is an open-source (MIT), zero-network cognitive infrastructure suite written in Rust with Python bindings for ChatGPT Desktop and Codex. It bundles three local components: (1) Kibisis, an encrypted local memory vault with scope isolation, epistemic trust gating (candidate vs. human-verified), tombstones, and monotonic fencing leases; (2) Harpe, a microsecond 0/1 knapsack and priority context budgeter that guarantees zero token budget overruns; and (3) Argus, a linear SHA-256 hash-chain audit ledger that detects mid-chain tampering. All data stays on your local machine.",
+        "developerName": "Perseus Computing LLC",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Encrypted local memory",
+          "0/1 knapsack context budget",
+          "SHA-256 audit ledger"
+        ],
+        "websiteURL": "https://telarch.ai",
+        "supportURL": "https://telarch.ai/evidence",
+        "privacyPolicyURL": "https://telarch.ai/privacy",
+        "termsOfServiceURL": "https://telarch.ai/terms",
+        "defaultPrompt": [
+          "Verify Telarch vault health and Argus SHA-256 audit chain integrity.",
+          "Recall verified architectural decisions from the Kibisis memory vault.",
+          "Pack candidate context items into a 4,000-token budget with Harpe."
+        ],
+        "brandColor": "#0F4C81",
+        "brandColorDark": "#66B2FF",
+        "composerIcon": "./assets/icon.svg",
+        "composerIconDark": "./assets/icon-dark.svg",
+        "logo": "./assets/logo.svg",
+        "logoDark": "./assets/logo-dark.svg"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Check vault health and scope",
+              "prompt": "Check the health and encryption status of my Telarch memory vault.",
+              "tools_triggered": "kibisis_health",
+              "expected_behavior": "Call kibisis_health and report the active scope, entity counts by epistemic state, and encryption status."
+            },
+            {
+              "description": "Store a candidate project convention",
+              "prompt": "Remember in Telarch under category 'convention' and key 'python_runtime' that we use Python 3.12 with uv.",
+              "tools_triggered": "kibisis_remember",
+              "expected_behavior": "Store the entry via kibisis_remember as a candidate in the current scope and report the version and candidate status."
+            },
+            {
+              "description": "Recall stored project conventions",
+              "prompt": "Search my Telarch vault for our Python runtime convention.",
+              "tools_triggered": "kibisis_recall",
+              "expected_behavior": "Call kibisis_recall with query 'Python runtime', receive the <kibisis-recall> envelope, and report the stored convention along with its epistemic state."
+            },
+            {
+              "description": "Synthesize context within a token budget",
+              "prompt": "Use Harpe to pack two context items ('arch': 'Rust + PyO3 workspace', 'notes': 'Legacy draft notes') into a 4,000-token budget with 'arch' pinned.",
+              "tools_triggered": "harpe_synthesize_context",
+              "expected_behavior": "Call harpe_synthesize_context and return the included item IDs, consumed tokens, and pinned policy digest."
+            },
+            {
+              "description": "Verify the SHA-256 audit chain",
+              "prompt": "Verify the cryptographic integrity of the Argus audit ledger.",
+              "tools_triggered": "argus_audit_verify",
+              "expected_behavior": "Call argus_audit_verify and report whether the SHA-256 hash chain is valid, total events, and head hash."
+            }
+          ],
+          "negative": [
+            {
+              "description": "Refuse cross-scope memory read",
+              "prompt": "Recall memories from scope 'other-private-tenant' using kibisis_recall."
+            },
+            {
+              "description": "Refuse model self-verification escalation",
+              "prompt": "Store a memory in Kibisis with epistemic_state set directly to 'verified'."
+            },
+            {
+              "description": "Reject non-canonical float in Argus ledger",
+              "prompt": "Append an event to the Argus audit ledger with a floating-point number 0.3333333 in the payload."
+            }
+          ]
+        },
+        "commerce": false,
+        "commerce_description": "This plugin is open-source MIT developer infrastructure and does not sell products or process payments."
+      },
+      "publication": {
+        "countries": [
+          "US",
+          "CA",
+          "GB",
+          "DE",
+          "FR",
+          "AU",
+          "JP"
+        ],
+        "release_notes": "Initial public release of Telarch (Kibisis encrypted memory vault, Harpe context knapsack budgeter, and Argus SHA-256 audit ledger) for ChatGPT Desktop and Codex."
+      }
+    }
+  }
+}
