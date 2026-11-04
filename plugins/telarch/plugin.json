@@ -47,8 +47,8 @@
         "brandColorDark": "#66B2FF",
         "composerIcon": "./assets/icon.svg",
         "composerIconDark": "./assets/icon-dark.svg",
-        "logo": "./assets/logo.svg",
-        "logoDark": "./assets/logo-dark.svg",
+        "logo": "./assets/icon.svg",
+        "logoDark": "./assets/icon-dark.svg",
         "screenshots": [
           "./assets/screenshot.png"
         ]
@@ -106,7 +106,8 @@
           ]
         },
         "commerce": false,
-        "commerce_description": "This plugin is open-source MIT developer infrastructure and does not sell products or process payments."
+        "commerce_description": "This plugin is open-source MIT developer infrastructure and does not sell products or process payments.",
+        "demo_recording_url": "https://telarch.ai/demo.mp4"
       },
       "publication": {
         "countries": [
