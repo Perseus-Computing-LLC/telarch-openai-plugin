@@ -349,7 +349,8 @@ function escapeAttr(value) {
   return escapeText(value).replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 }
 
-// Demonstration records. Only telarch_open_inspector uses them; kibisis_resolve_memory resolves what it is given.
+// Demonstration records: what kibisis_resolve_memory resolves when a call passes no `records` at all (the
+// result then says records_source "demonstration"), and what telarch_open_inspector shows.
 const KIBISIS_DEMO_RECORDS = [
   { key: "db_engine_v1", category: "decision", content: "Use unencrypted SQLite for local storage.", epistemic_state: "verified" },
   { key: "db_engine_v2", category: "decision", content: "Use SQLCipher AES-256 with PBKDF2-HMAC-SHA512 (256,000 iterations).", epistemic_state: "verified", supersedes_key: "db_engine_v1" },
@@ -373,7 +374,8 @@ function runKibisisResolve(args) {
 
   const query = (args.query ?? "").toLowerCase().trim();
   const queryTerms = query.split(/\s+/).filter(Boolean);
-  const records = (args.records ?? []).map(r => ({
+  const recordsSource = args.records === undefined ? "demonstration" : "request";
+  const records = (args.records ?? KIBISIS_DEMO_RECORDS).map(r => ({
     key: r.key,
     category: r.category ?? "decision",
     content: r.content,
@@ -428,6 +430,7 @@ function runKibisisResolve(args) {
     resolved_count: activeRecords.length,
     resolved_records: activeRecords,
     all_records_trace: trace,
+    records_source: recordsSource,
     envelope
   };
 }
@@ -699,7 +702,7 @@ const MCP_TOOLS = [
   {
     name: "kibisis_resolve_memory",
     title: "Resolve Epistemic Memory & Conflicts",
-    description: "Use this to work out which of the memory records you pass in `records` are active: revoked records are tombstoned, superseded records are dropped (a record that is not verified never displaces a verified one), a requested scope other than the active scope is refused, and a write_attempt that claims epistemic_state 'verified' without origin 'user' is refused. Active records matching `query` are returned in a <kibisis-recall trust=\"untrusted-stored-text\"> envelope with markup characters escaped. Stateless: this server stores no memory; it resolves only the records of this call.",
+    description: "Use this to work out which of the memory records you pass in `records` are active: revoked records are tombstoned, superseded records are dropped (a record that is not verified never displaces a verified one), a requested scope other than the active scope is refused, and a write_attempt that claims epistemic_state 'verified' without origin 'user' is refused. Active records matching `query` are returned in a <kibisis-recall trust=\"untrusted-stored-text\"> envelope with markup characters escaped. Stateless: this server stores no memory. It resolves the records of this call; when `records` is left out it resolves three built-in demonstration records and the result says records_source \"demonstration\".",
     inputSchema: {
       type: "object",
       properties: {
@@ -719,7 +722,7 @@ const MCP_TOOLS = [
         records: {
           type: "array",
           maxItems: TELARCH_LIMITS.max_items,
-          description: "Memory records to resolve across supersession and revocation chains.",
+          description: "Memory records to resolve across supersession and revocation chains. Left out: three built-in demonstration records. An empty list resolves nothing.",
           items: {
             type: "object",
             properties: {
