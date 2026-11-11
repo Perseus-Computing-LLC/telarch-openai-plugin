@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import subprocess
 from pathlib import Path
 
@@ -12,7 +13,21 @@ EDGE_JS = ROOT / "edge" / "telarch_edge_mcp.js"
 LOCAL_PY = ROOT / "plugins" / "telarch-local" / "server" / "telarch_mcp_server.py"
 
 
-def _load_local_server():
+_ENV_PREFIXES = ("KIBISIS_", "ARGUS_", "TELARCH_", "PLUGIN_", "HARPE_")
+
+
+def _load_local_server(tmp_path, monkeypatch):
+    """Start the local server on a throwaway data directory: nothing is written to the checkout or the real home."""
+    for key in list(os.environ):
+        if key.startswith(_ENV_PREFIXES):
+            monkeypatch.delenv(key)
+    home = tmp_path / "home"
+    home.mkdir()
+    monkeypatch.setenv("HOME", str(home))
+    monkeypatch.setenv("XDG_DATA_HOME", str(home / "xdg"))
+    monkeypatch.setenv("PLUGIN_DATA", str(tmp_path / "plugin_data"))
+    # The server points KIBISIS_PASSPHRASE_FILE at its key file; registering the name here makes pytest restore it.
+    monkeypatch.setenv("KIBISIS_PASSPHRASE_FILE", "")
     spec = importlib.util.spec_from_file_location("telarch_mcp_server", LOCAL_PY)
     assert spec and spec.loader
     mod = importlib.util.module_from_spec(spec)
@@ -34,8 +49,8 @@ def _call_edge_rpc(rpc_payload: dict) -> dict:
     return json.loads(proc.stdout)
 
 
-def test_edge_and_local_initialize_and_tools_list():
-    local = _load_local_server()
+def test_edge_and_local_initialize_and_tools_list(tmp_path, monkeypatch):
+    local = _load_local_server(tmp_path, monkeypatch)
     init_req = {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {}}
     local_init = local.handle_request(init_req)
     edge_init = _call_edge_rpc(init_req)
@@ -51,6 +66,8 @@ def test_edge_and_local_initialize_and_tools_list():
     assert shared.issubset(local_tools)
     assert shared.issubset(edge_tools)
     assert "telarch_open_inspector" in edge_tools
+    assert not (ROOT / ".telarch").exists(), "the local server wrote into the checkout"
+    assert (tmp_path / "plugin_data" / "kibisis_vault.sqlite").is_file()
 
 
 def test_edge_harpe_and_argus_deterministic_execution():
@@ -66,8 +83,8 @@ def test_edge_harpe_and_argus_deterministic_execution():
                 "reserved_tools": 10,
                 "safety_margin": 10,
                 "items": [
-                    {"id": "c1", "content": "Critical invariant rule", "priority": 90},
-                    {"id": "c2", "content": "Low priority note " * 60, "priority": 10},
+                    {"id": "c1", "content": "Critical invariant rule", "priority": 10},
+                    {"id": "c2", "content": "Low priority note " * 60, "priority": 90},
                 ],
             },
         },
