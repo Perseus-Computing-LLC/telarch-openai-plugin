@@ -73,6 +73,13 @@ def test_seal_does_not_emit_repeated_or_descending_sequences():
 
 
 def test_verify_does_not_report_a_chain_with_repeated_sequences_as_valid():
-    sealed = _sealed([dict(e, sequence=s) for e, s in zip(EVENTS, (7, 7, 3))])["result"]["structuredContent"]["events"]
+    # fix/review-20261110: argus_audit_seal now refuses sequences 7, 7, 3 in one call, so the chain is built from
+    # three one-event segments, each sealed onto the previous head. Every hash is genuine; only the numbering is bad.
+    sealed, prev = [], "GENESIS"
+    for e, s in zip(EVENTS, (7, 7, 3)):
+        segment = _tool("argus_audit_seal", {"prev_hash": prev, "events": [dict(e, sequence=s)]})["result"]["structuredContent"]
+        sealed += segment["events"]
+        prev = segment["head_hash"]
+    assert [e["sequence"] for e in sealed] == [7, 7, 3]
     resp = _tool("argus_audit_verify", {"events": sealed})
     assert _rejected(resp) or resp["result"]["structuredContent"]["valid"] is False, "sequences 7, 7, 3 verified as a valid linear chain"

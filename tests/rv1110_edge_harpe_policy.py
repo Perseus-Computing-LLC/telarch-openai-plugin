@@ -59,7 +59,10 @@ def _synth(policy):
 def test_control_priority_policies_keep_the_highest_priority_item():
     for policy in (None, "knapsack_dp", "lowest_priority"):
         out = _synth(policy)["result"]["structuredContent"]
-        assert out["included_ids"] == ["B"], policy
+        # fix/review-20261110: was `== ["B"]` (higher number wins). The reference is harpe 0.1.0a13, where a LOWER
+        # priority number is more important: knapsack_dp keeps the earlier of the two priority-10 items, and
+        # lowest_priority takes the newer one first.
+        assert out["included_ids"] == (["C"] if policy == "lowest_priority" else ["A"]), policy
         assert out["policy_applied"] == (policy or "knapsack_dp")
 
 

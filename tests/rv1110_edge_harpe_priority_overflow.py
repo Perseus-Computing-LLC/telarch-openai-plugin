@@ -50,8 +50,14 @@ TEXT = "alpha beta gamma delta"  # 6 tokens: exactly one item fits
 
 
 def test_control_higher_priority_wins_inside_int32():
-    assert _pick([{"id": "big", "content": TEXT, "priority": 2147483647}, {"id": "one", "content": TEXT, "priority": 1}]) == ["big"]
+    # fix/review-20261110: was priority 2147483647 expecting ["big"]. Priorities follow harpe 0.1.0a13: 0-100,
+    # lower = more important, so the control uses the top of the valid range and the lower number wins.
+    assert _pick([{"id": "big", "content": TEXT, "priority": 100}, {"id": "one", "content": TEXT, "priority": 1}]) == ["one"]
 
 
 def test_priority_of_two_to_the_31_still_wins():
-    assert _pick([{"id": "big", "content": TEXT, "priority": 2147483648}, {"id": "one", "content": TEXT, "priority": 1}]) == ["big"]
+    # fix/review-20261110: was `_pick(...) == ["big"]`. 2**31 is outside harpe's 0-100 range, so the call is now
+    # refused instead of the value wrapping to a negative Int32 and silently losing.
+    args = {"total_budget": 6, "reserved_completion": 0, "reserved_tools": 0, "safety_margin": 0,
+            "items": [{"id": "big", "content": TEXT, "priority": 2147483648}, {"id": "one", "content": TEXT, "priority": 1}]}
+    assert _rejected(_tool("harpe_synthesize_context", args))

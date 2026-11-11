@@ -65,7 +65,9 @@ def _alloc(n_items: int) -> dict:
 def test_control_small_request_allocates_one_row_per_item():
     out = _alloc(3)
     assert out["rejected"] is False
-    assert out["bytes"] == (3 + 1) * (8192 + 1) * 4
+    # fix/review-20261110: was `== (3 + 1) * (8192 + 1) * 4`, the size of the full table at the silent 8192 cap.
+    # The cap and the per-item rows are gone (binding decision 5), so a three-item call needs next to nothing.
+    assert out["bytes"] < 1024 * 1024
 
 
 def test_request_under_1mb_cannot_ask_for_more_memory_than_an_isolate_has():
