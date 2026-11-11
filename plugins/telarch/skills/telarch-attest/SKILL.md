@@ -1,20 +1,20 @@
 ---
 name: telarch-attest
-description: Use when verifying Telarch computation cards or receipts. Verify OKF Attested Computation sidecars and Argus receipt bindings.
+description: Use when sealing or verifying an Argus SHA-256 audit chain. Seal a list of events into a hash chain and check a chain for edits.
 ---
 
-# Telarch Attestation Verification
+# Telarch Audit Chains (hosted server)
 
-Verify deterministic computation attestations, OKF sidecar cards, and Argus audit ledger bindings.
+Seal events into a SHA-256 hash chain and verify a chain that is passed in. The hosted server stores no ledger: the chain lives with the caller.
 
 ## Operational Rules
 
-1. **Deterministic and Offline**: Never invoke remote networks or LLMs for attestation verification.
-2. **Bidirectional Binding**: Always verify both directions: the battery references the receipt sequence, and the receipt payload embeds the SHA-256 hashes of the battery and its card sidecar.
-3. **Chain Continuity**: Confirm Argus ledger cryptographic hash chain verification passes up to the receipt sequence.
-4. **Git Tree Verification**: Confirm computation entrypoint digest matches the recorded Git commit tree object.
+1. **Seal**: `argus_audit_seal` takes `events` (each with `event_type`, `actor` and `payload`) and returns them with `sequence`, `prev_hash` and `event_hash`, plus `head_hash`.
+2. **Integers only**: a payload with a non-integer number is refused (`FloatPayloadError`), and so is an integer beyond 2**53 - 1 (`UnsafeIntegerError`). Use basis points or strings.
+3. **Continue a chain**: pass the previous `head_hash` as `prev_hash` and give the first event its `sequence`.
+4. **Verify**: `argus_audit_verify` takes the sealed `events` and recomputes every hash. It returns `valid`, `total_events`, `head_hash`, `anchor_prev_hash`, `starts_at_genesis` and, when broken, `first_broken_index`, `first_broken_sequence` and `error_detail`.
+5. **Say what was proven**: `valid: true` means the events passed in are consistent with each other from `anchor_prev_hash` on. It proves the chain is complete only when `starts_at_genesis` is true and the caller compares `head_hash` with a value kept elsewhere.
 
 ## Supporting References
 
-- See [Attested Computation Cards Specification](references/cards.md) for OKF §10.2 schema rules.
-- See [Verification Guide](references/verification.md) for offline verification instructions.
+- See [Verification Guide](references/verification.md).

@@ -1,25 +1,17 @@
-# Offline Attestation Verification Guide
+# Verifying an Argus Chain (hosted server)
 
-This reference details offline, deterministic verification of Attested Computation cards.
+## Steps
 
-## Verification Tool (`verify_attestation.py`)
+1. Pass the sealed events, unchanged and in order, to `argus_audit_verify`. To check a segment that continues an earlier chain, also pass the earlier head hash as `prev_hash`.
+2. `valid: true`: report `total_events`, `head_hash` and `starts_at_genesis`.
+3. `valid: false`: report `first_broken_index`, `first_broken_sequence` and `error_detail` as returned. An event with a missing or altered field, a wrong hash, a wrong link or a sequence that does not follow the one before it makes the chain invalid.
 
-Run verification without network or LLM calls:
+## Limits of the check
 
-```bash
-python3 ops/tci/verify_attestation.py \
-  --card phase-P16/battery-start.card.json \
-  --battery phase-P16/battery-start.json
-```
+- The server keeps no copy of any chain. It cannot tell whether events were removed from the end; compare `head_hash` with a value stored elsewhere.
+- A chain that does not start at genesis is reported with `starts_at_genesis: false`.
+- At most 4096 events per call.
 
-## Verification Checks
+## What this plugin does not do
 
-The verifier enforces:
-
-1. **Card Conformance**: Validates card schema against OKF v0.2 §10.2 specifications.
-2. **Chain Integrity**: Validates Argus ledger SHA-256 hash continuity from genesis to the receipt sequence.
-3. **Bidirectional Binding**:
-   - `battery.json` declares the receipt sequence number.
-   - The Argus receipt payload embeds `battery_sha256` and `card_sha256`.
-   - The card references the receipt sequence.
-4. **Git Object Integrity**: Recomputes `computation_sha256` of the entrypoint file and verifies against the git tree at the recorded head.
+Neither Telarch server reads computation cards, battery files or git trees. Verifying those is outside this plugin.
