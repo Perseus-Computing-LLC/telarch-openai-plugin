@@ -1119,7 +1119,7 @@ async function handleMcpRpcSingle(req) {
         },
         serverInfo: {
           name: "telarch-mcp",
-          version: "0.1.0"
+          version: "0.2.0"
         },
         instructions: "Stateless tools; nothing is stored between calls. Use harpe_synthesize_context for 0/1 knapsack token packing (priority 0-100, lower = more important), kibisis_resolve_memory to resolve the memory records you pass in and frame them in an escaped <kibisis-recall> envelope, argus_audit_seal / argus_audit_verify for RFC 8785 SHA-256 audit chains (safe integers and strings only; no fractions), and telarch_open_inspector for interactive visualization of demonstration data. Arguments are checked against each tool's inputSchema; a call that does not match is refused."
       }

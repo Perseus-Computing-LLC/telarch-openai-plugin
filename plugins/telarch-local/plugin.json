@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "telarch-local",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Local-first cognitive infrastructure for AI agents: Kibisis encrypted memory vault, Harpe 0/1 knapsack context budgeting, and Argus tamper-evident SHA-256 audit ledger.",
   "author": {
     "name": "Perseus Computing LLC",
