@@ -1,20 +1,20 @@
 ---
 name: telarch-attest
-description: Use when verifying Telarch computation cards or receipts. Verify OKF Attested Computation sidecars and Argus receipt bindings.
+description: Use when recording or verifying entries in the local Argus audit ledger. Append events, verify the SHA-256 chain, read the latest events.
 ---
 
-# Telarch Attestation Verification
+# Telarch Audit Ledger (local server)
 
-Verify deterministic computation attestations, OKF sidecar cards, and Argus audit ledger bindings.
+Record what was done in this machine's Argus ledger and verify that the ledger has not been edited.
 
 ## Operational Rules
 
-1. **Deterministic and Offline**: Never invoke remote networks or LLMs for attestation verification.
-2. **Bidirectional Binding**: Always verify both directions: the battery references the receipt sequence, and the receipt payload embeds the SHA-256 hashes of the battery and its card sidecar.
-3. **Chain Continuity**: Confirm Argus ledger cryptographic hash chain verification passes up to the receipt sequence.
-4. **Git Tree Verification**: Confirm computation entrypoint digest matches the recorded Git commit tree object.
+1. **Append**: `argus_audit_append` takes `event_type`, `actor` and `payload` (an object) and returns `sequence`, `event_hash` and `prev_hash`.
+2. **No floats in payloads**: a payload containing a non-integer number is refused (`FloatPayloadError`). Store basis points or a fixed-format string instead.
+3. **Verify**: `argus_audit_verify` takes no arguments. It checks the whole ledger file from its first event and returns `valid`, `total_events`, `head_hash` and, when the chain is broken, `first_broken_sequence` and `error_detail`. It does not verify events passed to it; a call with arguments is refused.
+4. **Read**: `argus_audit_tail` returns the latest events (`limit` 1 to 50, default 5).
+5. Report the values the tools return. Do not state that a chain is valid without calling `argus_audit_verify`.
 
 ## Supporting References
 
-- See [Attested Computation Cards Specification](references/cards.md) for OKF §10.2 schema rules.
-- See [Verification Guide](references/verification.md) for offline verification instructions.
+- See [Verification Guide](references/verification.md).

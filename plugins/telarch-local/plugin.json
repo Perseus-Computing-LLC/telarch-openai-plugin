@@ -2,14 +2,14 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "telarch-local",
   "version": "0.1.0",
-  "description": "Local-first cognitive infrastructure for AI agents: Kibisis encrypted memory vault with monotonic fencing leases, Harpe microsecond 0/1 knapsack context budgeting, and Argus tamper-evident SHA-256 audit ledger.",
+  "description": "Local-first cognitive infrastructure for AI agents: Kibisis encrypted memory vault, Harpe 0/1 knapsack context budgeting, and Argus tamper-evident SHA-256 audit ledger.",
   "author": {
     "name": "Perseus Computing LLC",
     "email": "contact@perseuscomputing.com",
     "url": "https://perseuscomputing.com"
   },
   "homepage": "https://telarch.ai",
-  "repository": "https://github.com/Perseus-Computing-LLC",
+  "repository": "https://github.com/Perseus-Computing-LLC/telarch-openai-plugin",
   "license": "MIT",
   "keywords": [
     "memory",
@@ -27,7 +27,7 @@
       "interface": {
         "displayName": "Telarch Local Vault",
         "shortDescription": "Local SQLCipher memory & audit",
-        "longDescription": "Telarch is an open-source (MIT), zero-network cognitive infrastructure suite written in Rust with Python bindings for ChatGPT Desktop and Codex. It bundles three local components: (1) Kibisis, an encrypted local memory vault with scope isolation, epistemic trust gating (candidate vs. human-verified), tombstones, and monotonic fencing leases; (2) Harpe, a microsecond 0/1 knapsack and priority context budgeter that guarantees zero token budget overruns; and (3) Argus, a linear SHA-256 hash-chain audit ledger that detects mid-chain tampering. All data stays on your local machine.",
+        "longDescription": "Telarch is an open-source (MIT) cognitive infrastructure suite for ChatGPT Desktop and Codex. This plugin runs a local stdio server over three local components: (1) Kibisis, a local memory vault with one scope per server, epistemic trust gating (model writes are stored as candidates until a person verifies them) and tombstones; the vault file is encrypted by default with a key file created beside it, or with a passphrase from the environment that keeps the key out of the folder; (2) Harpe, a 0/1 knapsack and priority context budgeter that packs against the budget left after the reserves and always keeps pinned items; and (3) Argus, a linear SHA-256 hash-chain audit ledger that detects mid-chain tampering. The server works on files on your machine and has no network code of its own.",
         "developerName": "Perseus Computing LLC",
         "category": "Developer Tools",
         "capabilities": [

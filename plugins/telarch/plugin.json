@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "app-6a5586fe76788191a23b6b2c873a44a6",
   "version": "0.1.0",
-  "description": "Cognitive infrastructure for AI agents: Harpe 0/1 knapsack context budgeting, Kibisis epistemic memory conflict resolution & monotonic fencing leases, Argus RFC 8785 SHA-256 audit chains, and an interactive ChatGPT Inspector UI.",
+  "description": "Cognitive infrastructure for AI agents: Harpe 0/1 knapsack context budgeting, Kibisis epistemic memory conflict resolution & fencing-token checks, Argus RFC 8785 SHA-256 audit chains, and an interactive ChatGPT Inspector UI.",
   "author": {
     "name": "Perseus Computing LLC",
     "email": "contact@perseuscomputing.com",
@@ -26,7 +26,7 @@
       "interface": {
         "displayName": "Telarch",
         "shortDescription": "Agent memory, budget & audit",
-        "longDescription": "Telarch is an open-source (MIT) cognitive infrastructure suite by Perseus Computing LLC for ChatGPT and Codex. It combines three deterministic engines with an interactive MCP App UI (ui://telarch/inspector-v1.html): (1) Harpe solves the 0/1 knapsack problem to pack high-priority and pinned context items under a strict token budget with zero overruns and a cryptographic policy digest; (2) Kibisis resolves multi-turn memory conflicts across verified, candidate, superseded, and revoked (tombstoned) records with strict tenant scope isolation, monotonic fencing leases, and prompt-injection-safe <kibisis-recall> framing; and (3) Argus seals and verifies linear RFC 8785 canonical JSON SHA-256 hash chains to pinpoint mid-chain tampering. Hosted edge calls on https://telarch.ai/mcp execute statelessly with zero data retention.",
+        "longDescription": "Telarch is an open-source (MIT) cognitive infrastructure suite by Perseus Computing LLC for ChatGPT and Codex. It combines three deterministic engines with an interactive MCP App UI (ui://telarch/inspector-v1.html): (1) Harpe solves the 0/1 knapsack problem to pack the most important and pinned context items under a token budget (pinned items are always kept and an overflow is reported) with a SHA-256 policy digest; (2) Kibisis resolves conflicts among the memory records passed in a call across verified, candidate, superseded, and revoked (tombstoned) records, with a scope check, a fencing-token check on the numbers of the call, and <kibisis-recall> framing that escapes stored text; and (3) Argus seals and verifies linear RFC 8785 canonical JSON SHA-256 hash chains over the events passed in a call to pinpoint mid-chain tampering. Hosted edge calls on https://telarch.ai/mcp execute statelessly: the server stores no memory, lease or ledger between calls.",
         "developerName": "Perseus Computing LLC",
         "category": "Developer Tools",
         "capabilities": [
@@ -64,7 +64,7 @@
             },
             {
               "description": "Pack context within a token budget via 0/1 knapsack",
-              "prompt": "Use Harpe to pack three candidate items ('invariants' pinned priority 100, 'knapsack' priority 90, 'verbose_log' priority 10) into a total_budget of 3640 tokens.",
+              "prompt": "Use Harpe to pack three candidate items ('invariants' pinned priority 0, 'knapsack' priority 10, 'verbose_log' priority 90; a lower priority number is more important) into a total_budget of 3640 tokens.",
               "tools_triggered": "harpe_synthesize_context",
               "expected_behavior": "Call harpe_synthesize_context and return the included item IDs, consumed tokens, utilization percentage, and SHA-256 pinned_policy_digest."
             },
