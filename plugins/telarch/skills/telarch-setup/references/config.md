@@ -11,7 +11,7 @@
 - `POST` with `Content-Type: application/json`; the answer is JSON. A `POST` with another content type is refused (415); an `Accept` header that excludes JSON is refused (406).
 - `MCP-Protocol-Version`: an unsupported value is refused (400).
 - `GET` with `Accept: text/event-stream` opens an event stream; any other `GET` gets 405.
-- A request with an `Origin` header is served only for the origins the server lists (the Telarch and Perseus Computing sites and ChatGPT); other origins get 403. Requests without `Origin` (server-to-server clients) are served.
+- A request with an `Origin` header is served only for the origins the server lists (the Telarch and Perseus Computing sites, ChatGPT, and the frame ChatGPT renders the inspector in); other origins get 403. Requests without `Origin` (server-to-server clients) are served.
 
 ## Limits
 

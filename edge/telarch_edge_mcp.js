@@ -1194,7 +1194,12 @@ const MCP_ALLOWED_ORIGINS = [
   "https://perseuscomputing.com",
   "https://www.perseuscomputing.com",
   "https://chatgpt.com",
-  "https://chat.openai.com"
+  "https://chat.openai.com",
+  // The frames ChatGPT renders the inspector in. INSPECTOR_RESOURCE_META names telarch.ai as the widget domain
+  // and as a connect domain, so the inspector's direct call to /mcp comes from the first of these; the second
+  // is the frame used when a host ignores the widget domain.
+  "https://telarch-ai.web-sandbox.oaiusercontent.com",
+  "https://web-sandbox.oaiusercontent.com"
 ];
 
 const MCP_CORS_HEADERS = {

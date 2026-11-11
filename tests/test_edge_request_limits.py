@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 
-from telarch_testlib import edge_http, node
+from telarch_testlib import edge_http, edge_rpc_many, node
 
 JSON_HEADERS = {"content-type": "application/json", "accept": "application/json, text/event-stream"}
 PING = {"jsonrpc": "2.0", "id": 1, "method": "ping"}
@@ -120,3 +120,19 @@ def test_refusals_carry_cors_headers_only_for_an_admitted_origin():
     assert none["status"] == 400 and "access-control-allow-origin" not in none["headers"]
     for response in (listed, unlisted, none):
         assert "origin" in response["headers"].get("vary", "").lower()
+
+
+def test_the_inspector_frame_in_chatgpt_may_call_the_endpoint_it_is_told_to_connect_to():
+    """The inspector resource names telarch.ai as its widget domain and connect domain. ChatGPT renders such a
+    widget at <domain with dots as dashes>.web-sandbox.oaiusercontent.com, so that origin has to be admitted."""
+    read = edge_rpc_many([{"jsonrpc": "2.0", "id": 1, "method": "resources/read", "params": {"uri": "ui://telarch/inspector-v1.html"}}])[0]
+    ui = read["result"]["contents"][0]["_meta"]["ui"]
+    domain, connect = ui["domain"], ui["csp"]["connectDomains"]
+    assert domain == "https://telarch.ai" and connect == ["https://telarch.ai"]
+    frame = "https://" + domain.removeprefix("https://").replace(".", "-") + ".web-sandbox.oaiusercontent.com"
+    served, lookalike = edge_http([
+        {"headers": dict(JSON_HEADERS, origin=frame), "body": json.dumps(PING)},
+        {"headers": dict(JSON_HEADERS, origin=frame + ".evil.example"), "body": json.dumps(PING)},
+    ])
+    assert served["status"] == 200 and served["headers"]["access-control-allow-origin"] == frame
+    assert lookalike["status"] == 403 and "access-control-allow-origin" not in lookalike["headers"]
