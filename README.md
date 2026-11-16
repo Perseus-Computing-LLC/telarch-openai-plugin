@@ -2,7 +2,7 @@
 
 Official **ChatGPT** and **Codex** plugin repository for [**Telarch**](https://telarch.ai) by [**Perseus Computing LLC**](https://perseuscomputing.com) (MIT License).
 
-The hosted plugin is in the plugin directory that ChatGPT and Codex share: **[Telarch in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6aea976fdfb08191bda018482c7bc72e)**. The directory lists version 0.1.0 of the plugin; the server it calls, `https://telarch.ai/mcp`, runs the 0.2.1 code in this repository. Until the directory lists 0.2.1, ChatGPT checks tool calls against the 0.1.0 tool descriptions, which do not allow a sealed event's `timestamp` to be `null`: give every event a `timestamp` when sealing a chain you will verify there.
+The hosted plugin is in the plugin directory that ChatGPT and Codex share: **[Telarch in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6aea976fdfb08191bda018482c7bc72e)**. The directory lists version 0.1.0 of the plugin; the server it calls, `https://telarch.ai/mcp`, runs the 0.2.2 code in this repository. Until the directory lists 0.2.2, ChatGPT checks tool calls against the 0.1.0 tool descriptions, which do not allow a sealed event's `timestamp` to be `null`: give every event a `timestamp` when sealing a chain you will verify there.
 
 Telarch is three open-source libraries, in Rust and Python, that control what an AI agent reads and remembers and prove what it did:
 - **Harpe** chooses what goes into each model call under a token budget, the same way every time; pinned items always stay. Median call time: 30.88 µs for 200 items with a 1,500-token budget.

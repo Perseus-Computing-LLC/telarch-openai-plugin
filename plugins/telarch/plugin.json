@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "app-6a5586fe76788191a23b6b2c873a44a6",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Cognitive infrastructure for AI agents: Harpe exact knapsack context budgeting, Kibisis epistemic memory conflict resolution & fencing-token checks, Argus RFC 8785 SHA-256 audit chains, and an interactive ChatGPT Inspector UI.",
   "author": {
     "name": "Perseus Computing LLC",
@@ -48,10 +48,7 @@
         "composerIcon": "./assets/icon.svg",
         "composerIconDark": "./assets/icon-dark.svg",
         "logo": "./assets/icon.svg",
-        "logoDark": "./assets/icon-dark.svg",
-        "screenshots": [
-          "./assets/screenshot.png"
-        ]
+        "logoDark": "./assets/icon-dark.svg"
       },
       "review": {
         "test_cases": {
@@ -119,7 +116,7 @@
           "AU",
           "JP"
         ],
-        "release_notes": "Version 0.2.1 brings the listing in line with the server at https://telarch.ai/mcp. A chain sealed without timestamps now verifies as returned: argus_audit_verify accepts a sealed event whose timestamp is null. Arguments that do not match a tool's schema are refused instead of replaced by defaults. In harpe_synthesize_context a lower priority number is more important (0 to 100). The three skills name only the tools the hosted server has."
+        "release_notes": "Version 0.2.2 brings the listing in line with the server at https://telarch.ai/mcp. A chain sealed without timestamps now verifies as returned: argus_audit_verify accepts a sealed event whose timestamp is null. Arguments that do not match a tool's schema are refused instead of replaced by defaults. In harpe_synthesize_context a lower priority number is more important (0 to 100). The three skills name only the tools the hosted server has."
       }
     }
   }
