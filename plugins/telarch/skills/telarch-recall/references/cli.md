@@ -18,7 +18,7 @@ kibisis_resolve_memory(
 - `query` is required; an empty string matches every active record.
 - `requested_scope`, when given, must equal `active_scope`; otherwise the call is refused with `ScopeIsolationError`.
 - `write_attempt={"origin": "model" or "user", "epistemic_state": ...}` evaluates the write gate: `verified` is accepted only with origin `user`; otherwise the call is refused with `EpistemicTrustViolation`.
-- The result has `resolved_records`, `all_records_trace` (every record with its status), `records_source` and `envelope`.
+- The result has `resolved_records`, `all_records_trace` (every record with its status), `unresolved_supersedes` (each `supersedes_key` that names no record of the call), `records_source` and `envelope`.
 
 ## Check a fencing token
 

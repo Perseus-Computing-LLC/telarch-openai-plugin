@@ -2,7 +2,7 @@
 
 Official **ChatGPT** and **Codex** plugin repository for [**Telarch**](https://telarch.ai) by [**Perseus Computing LLC**](https://perseuscomputing.com) (MIT License).
 
-The hosted plugin is in the plugin directory that ChatGPT and Codex share: **[Telarch in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6aea976fdfb08191bda018482c7bc72e)**. The directory lists version 0.1.0 of the plugin; the server it calls, `https://telarch.ai/mcp`, runs the 0.2.2 code in this repository. Until the directory lists 0.2.2, ChatGPT checks tool calls against the 0.1.0 tool descriptions, which do not allow a sealed event's `timestamp` to be `null`: give every event a `timestamp` when sealing a chain you will verify there.
+The hosted plugin is in the plugin directory that ChatGPT and Codex share: **[Telarch in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6aea976fdfb08191bda018482c7bc72e)**. The directory lists version 0.2.2 of the plugin package (listing text and skills); the server it calls, `https://telarch.ai/mcp`, runs the 0.2.3 code in this repository. The tool descriptions ChatGPT holds are a separate copy that OpenAI scans from the server, and that copy is still the one taken from 0.1.0 ([issue 7](https://github.com/Perseus-Computing-LLC/telarch-openai-plugin/issues/7)). Until OpenAI scans the server again, ChatGPT checks tool calls against the 0.1.0 descriptions, which do not allow a sealed event's `timestamp` to be `null`: give every event a `timestamp` when sealing a chain you will verify there.
 
 Telarch is three open-source libraries, in Rust and Python, that control what an AI agent reads and remembers and prove what it did:
 - **Harpe** chooses what goes into each model call under a token budget, the same way every time; pinned items always stay. Median call time: 30.88 µs for 200 items with a 1,500-token budget.
@@ -23,7 +23,7 @@ This repository provides two ready-to-use plugin distributions under [`.agents/p
 - **Live MCP Endpoint:** `https://telarch.ai/mcp` (`type: "streamable-http"`, `auth.type: "none"`; stateless, nothing is kept between calls)
 - **What the tools work on:** the arguments of the call, nothing else. The server stores no memory, holds no lease table and keeps no ledger: `kibisis_resolve_memory` resolves the records passed to it (or three built-in demonstration records when none are passed, and says so), `kibisis_lease_evaluate` compares the numbers passed to it, and `argus_audit_seal` / `argus_audit_verify` hash the events passed to them.
 - **Refusals instead of defaults:** arguments are checked against each tool's input schema (JSON-RPC error -32602). Stated limits per call: 1 MiB request body, JSON nesting depth 64, 16 messages per batch, 4,096 items, 4,000,000 knapsack table cells. A call above a limit is refused with an error that names it.
-- **Interactive MCP App UI (`ui://telarch/inspector-v1.html`):** 3-tab interactive visual inspector (**Harpe 0/1 Knapsack**, **Kibisis Epistemic Memory**, **Argus SHA-256 Chain**) supporting inline cards, global sidebar entrypoints, and thread side-panel entrypoints.
+- **Interactive MCP App UI (`ui://telarch/inspector-v1.html`):** 3-tab interactive visual inspector (**Harpe Exact Knapsack**, **Kibisis Memory**, **Argus SHA-256 Chain**) supporting inline cards, global sidebar entrypoints, and thread side-panel entrypoints.
 - **Tools Exposed (7):**
   - `telarch_open_inspector`
   - `harpe_synthesize_context`

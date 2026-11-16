@@ -7,7 +7,7 @@ description: Use when initializing or verifying the Telarch plugin in ChatGPT or
 
 The hosted Telarch server keeps nothing between calls. Each tool computes its answer from the arguments of that one call:
 
-- **Harpe (`harpe_synthesize_context`, `harpe_budget_evaluate`):** deterministic context packing under a token budget. `knapsack_dp` is an exact 0/1 knapsack; `lowest_priority`, `fifo` and `warm_prefix` are the other policies.
+- **Harpe (`harpe_synthesize_context`, `harpe_budget_evaluate`):** deterministic context packing under a token budget. `knapsack_dp` is an exact knapsack; `lowest_priority`, `fifo` and `warm_prefix` are the other policies.
 - **Kibisis (`kibisis_resolve_memory`, `kibisis_lease_evaluate`):** resolves supersession and revocation among the memory records you pass in and frames the result in a `<kibisis-recall>` envelope; checks a fencing token against the numbers you pass in. The server stores no memory and holds no lease table.
 - **Argus (`argus_audit_seal`, `argus_audit_verify`):** computes and checks a SHA-256 hash chain over the events you pass in, using canonical JSON (RFC 8785) restricted to integers that can be hashed exactly.
 - **Telarch Inspector UI (`telarch_open_inspector`):** a 3-tab inspector rendered inline or in the ChatGPT side panel (`ui://telarch/inspector-v1.html`), filled with demonstration data.
