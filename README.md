@@ -2,6 +2,8 @@
 
 Official **ChatGPT** and **Codex** plugin repository for [**Telarch**](https://telarch.ai) by [**Perseus Computing LLC**](https://perseuscomputing.com) (MIT License).
 
+The hosted plugin is in the plugin directory that ChatGPT and Codex share: **[Telarch in the ChatGPT plugin directory](https://chatgpt.com/plugins/plugin_asdk_app_6aea976fdfb08191bda018482c7bc72e)**. The directory lists version 0.1.0 of the plugin; the server it calls, `https://telarch.ai/mcp`, runs the 0.2.0 code in this repository.
+
 Telarch is three open-source libraries, in Rust and Python, that control what an AI agent reads and remembers and prove what it did:
 - **Harpe** chooses what goes into each model call under a token budget, the same way every time; pinned items always stay. Median call time: 30.88 µs for 200 items with a 1,500-token budget.
 - **Kibisis** keeps agent memory in an encrypted SQLite file on your disk (Python package), with recall by scope, trust state (`candidate` until a person marks it `verified`) and date, tombstones that stick, and one writer at a time through fencing leases: 1,687,776 lease operations per second from 32 threads in one process, with 0 double grants.
@@ -61,9 +63,16 @@ codex plugin add app-6a5586fe76788191a23b6b2c873a44a6@perseus-telarch-plugins
 pip install kibisis==0.1.0a17 harpe==0.1.0a13 argus-ledger==0.1.0a9
 ```
 
+### Install from the Plugin Directory (ChatGPT and Codex)
+
+1. Open **Plugins** in ChatGPT (web or desktop), search for **Telarch** and install it, or open the [listing](https://chatgpt.com/plugins/plugin_asdk_app_6aea976fdfb08191bda018482c7bc72e) directly.
+2. Start a new chat and type `@Telarch`, or ask for one of the tools by what it does.
+
+Codex uses the same directory: open **Plugins** in the ChatGPT desktop app, or enter `/plugins` in Codex CLI, then start a new session.
+
 ### Connect Directly in ChatGPT (Web or Desktop)
 
-Add `https://telarch.ai/mcp` as a custom app (connector) in ChatGPT developer mode. The app is in review with OpenAI and not listed in the ChatGPT app directory yet. Setup steps: [telarch.ai/chatgpt](https://telarch.ai/chatgpt).
+To connect the server without the directory, add `https://telarch.ai/mcp` as a custom app (connector) in ChatGPT developer mode. Setup steps: [telarch.ai/chatgpt](https://telarch.ai/chatgpt).
 
 ---
 
