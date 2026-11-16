@@ -137,4 +137,4 @@ def test_the_review_commands_in_the_local_skill_run_against_the_plugin_vault(loc
 def test_readme_install_line_and_ci_use_the_same_pinned_libraries():
     assert f"pip install {PINNED}" in README.read_text(encoding="utf-8")
     workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
-    assert f"pip install pytest {PINNED}" in workflow and "python -m pytest -q tests" in workflow
+    assert f"pip install pytest jsonschema {PINNED}" in workflow and "python -m pytest -q tests" in workflow
