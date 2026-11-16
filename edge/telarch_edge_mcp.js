@@ -784,7 +784,7 @@ const MCP_TOOLS = [
   {
     name: "argus_audit_seal",
     title: "Seal RFC 8785 SHA-256 Audit Chain",
-    description: "Use this to compute canonical RFC 8785 (JCS) JSON and linear SHA-256 hash-chain digests for a sequence of agent audit events, from GENESIS or from the head_hash of an earlier segment (prev_hash; then the first event must give its sequence). Sequences rise by exactly one. Rejects fractions (use integer basis points *_bp) and integers beyond +/-(2**53 - 1) (send them as strings). An event without a timestamp is sealed with timestamp null; no time is invented. Stateless: the sealed events are returned, not stored.",
+    description: "Use this to compute canonical RFC 8785 (JCS) JSON and linear SHA-256 hash-chain digests for a sequence of agent audit events, from GENESIS or from the head_hash of an earlier segment (prev_hash; then the first event must give its sequence). Sequences rise by exactly one. Rejects fractions (use integer basis points *_bp) and integers beyond +/-(2**53 - 1) (send them as strings). An event without a timestamp is sealed with timestamp null; no time is invented. To check the chain, pass the returned events to argus_audit_verify unchanged, a null timestamp included. Stateless: the sealed events are returned, not stored.",
     inputSchema: {
       type: "object",
       properties: {
@@ -826,7 +826,7 @@ const MCP_TOOLS = [
   {
     name: "argus_audit_verify",
     title: "Verify SHA-256 Audit Ledger Continuity",
-    description: "Use this to cryptographically verify a linear SHA-256 Argus audit chain and isolate the first event that is altered, malformed, out of sequence or unlinked. Pass the sealed events exactly as argus_audit_seal returned them; a missing or retyped field makes the chain invalid, nothing is defaulted. The result proves the listed events are unaltered and linked from anchor_prev_hash (starts_at_genesis says whether that is GENESIS). It cannot detect events removed from the end of the list: compare head_hash and total_events with values you already trust.",
+    description: "Use this to cryptographically verify a linear SHA-256 Argus audit chain and isolate the first event that is altered, malformed, out of sequence or unlinked. Pass the sealed events exactly as argus_audit_seal returned them, with timestamp null where it is null; a missing or retyped field makes the chain invalid, nothing is defaulted. The result proves the listed events are unaltered and linked from anchor_prev_hash (starts_at_genesis says whether that is GENESIS). It cannot detect events removed from the end of the list: compare head_hash and total_events with values you already trust.",
     inputSchema: {
       type: "object",
       properties: {
@@ -856,7 +856,7 @@ const MCP_TOOLS = [
   },
   {
     name: "telarch_open_inspector",
-    title: "Open Telarch Cognitive Infrastructure Inspector",
+    title: "Telarch Inspector",
     description: "Render the interactive Telarch Inspector UI for exploring Harpe 0/1 knapsack token packing, Kibisis epistemic memory conflict resolution, and Argus SHA-256 audit chain verification. It shows built-in demonstration data, not stored data.",
     inputSchema: {
       type: "object",
@@ -867,7 +867,7 @@ const MCP_TOOLS = [
       additionalProperties: false
     },
     annotations: {
-      title: "Open Telarch Inspector UI",
+      title: "Telarch Inspector",
       readOnlyHint: true,
       destructiveHint: false,
       idempotentHint: true,
@@ -1119,7 +1119,7 @@ async function handleMcpRpcSingle(req) {
         },
         serverInfo: {
           name: "telarch-mcp",
-          version: "0.2.0"
+          version: "0.2.1"
         },
         instructions: "Stateless tools; nothing is stored between calls. Use harpe_synthesize_context for 0/1 knapsack token packing (priority 0-100, lower = more important), kibisis_resolve_memory to resolve the memory records you pass in and frame them in an escaped <kibisis-recall> envelope, argus_audit_seal / argus_audit_verify for RFC 8785 SHA-256 audit chains (safe integers and strings only; no fractions), and telarch_open_inspector for interactive visualization of demonstration data. Arguments are checked against each tool's inputSchema; a call that does not match is refused."
       }

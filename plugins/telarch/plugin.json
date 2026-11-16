@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "app-6a5586fe76788191a23b6b2c873a44a6",
-  "version": "0.2.0",
-  "description": "Cognitive infrastructure for AI agents: Harpe 0/1 knapsack context budgeting, Kibisis epistemic memory conflict resolution & fencing-token checks, Argus RFC 8785 SHA-256 audit chains, and an interactive ChatGPT Inspector UI.",
+  "version": "0.2.1",
+  "description": "Cognitive infrastructure for AI agents: Harpe exact knapsack context budgeting, Kibisis epistemic memory conflict resolution & fencing-token checks, Argus RFC 8785 SHA-256 audit chains, and an interactive ChatGPT Inspector UI.",
   "author": {
     "name": "Perseus Computing LLC",
     "email": "contact@perseuscomputing.com",
@@ -26,11 +26,11 @@
       "interface": {
         "displayName": "Telarch",
         "shortDescription": "Agent memory, budget & audit",
-        "longDescription": "Telarch is an open-source (MIT) cognitive infrastructure suite by Perseus Computing LLC for ChatGPT and Codex. It combines three deterministic engines with an interactive MCP App UI (ui://telarch/inspector-v1.html): (1) Harpe solves the 0/1 knapsack problem to pack the most important and pinned context items under a token budget (pinned items are always kept and an overflow is reported) with a SHA-256 policy digest; (2) Kibisis resolves conflicts among the memory records passed in a call across verified, candidate, superseded, and revoked (tombstoned) records, with a scope check, a fencing-token check on the numbers of the call, and <kibisis-recall> framing that escapes stored text; and (3) Argus seals and verifies linear RFC 8785 canonical JSON SHA-256 hash chains over the events passed in a call to pinpoint mid-chain tampering. Hosted edge calls on https://telarch.ai/mcp execute statelessly: the server stores no memory, lease or ledger between calls.",
+        "longDescription": "Telarch is an open-source (MIT) cognitive infrastructure suite by Perseus Computing LLC for ChatGPT and Codex. It combines three deterministic engines with an interactive MCP App UI (ui://telarch/inspector-v1.html): (1) Harpe uses exact knapsack selection to pack the most important context items under a token budget (pinned items are kept, and an overflow is reported) and returns a SHA-256 policy digest; (2) Kibisis resolves conflicts among the memory records passed in a call across verified, candidate, superseded, and revoked (tombstoned) records, with a scope check, a fencing-token check on the numbers of the call, and <kibisis-recall> framing that escapes stored text; and (3) Argus seals and verifies linear RFC 8785 canonical JSON SHA-256 hash chains over the events passed in a call to find the first event that was changed. Hosted edge calls on https://telarch.ai/mcp execute statelessly: the server stores no memory, lease or ledger between calls.",
         "developerName": "Perseus Computing LLC",
         "category": "Developer Tools",
         "capabilities": [
-          "0/1 knapsack context packer",
+          "Exact knapsack context packer",
           "Epistemic memory & leases",
           "SHA-256 audit chain & UI"
         ],
@@ -40,7 +40,7 @@
         "termsOfServiceURL": "https://telarch.ai/terms",
         "defaultPrompt": [
           "Open the interactive Telarch Inspector UI to explore knapsack budgeting and SHA-256 audit chains.",
-          "Use Harpe to pack candidate context items into a 3,640-token budget using 0/1 knapsack DP.",
+          "Use Harpe to pack candidate context items into a 3,640-token budget with exact knapsack selection.",
           "Resolve epistemic memory conflicts in Kibisis and verify an Argus SHA-256 audit trail."
         ],
         "brandColor": "#0F4C81",
@@ -63,7 +63,7 @@
               "expected_behavior": "Call telarch_open_inspector and render the 3-tab interactive Telarch Inspector UI (Harpe 0/1 Knapsack, Kibisis Memory, Argus SHA-256 Chain) alongside structured summary data."
             },
             {
-              "description": "Pack context within a token budget via 0/1 knapsack",
+              "description": "Pack context within a token budget via exact knapsack selection",
               "prompt": "Use Harpe to pack three candidate items ('invariants' pinned priority 0, 'knapsack' priority 10, 'verbose_log' priority 90; a lower priority number is more important) into a total_budget of 3640 tokens.",
               "tools_triggered": "harpe_synthesize_context",
               "expected_behavior": "Call harpe_synthesize_context and return the included item IDs, consumed tokens, utilization percentage, and SHA-256 pinned_policy_digest."
@@ -119,7 +119,7 @@
           "AU",
           "JP"
         ],
-        "release_notes": "Initial public release of Telarch v0.1.0 (Streamable-HTTP MCP at https://telarch.ai/mcp + Interactive 3-tab MCP App UI + 3 SKILL.md workflows)."
+        "release_notes": "Version 0.2.1 brings the listing in line with the server at https://telarch.ai/mcp. A chain sealed without timestamps now verifies as returned: argus_audit_verify accepts a sealed event whose timestamp is null. Arguments that do not match a tool's schema are refused instead of replaced by defaults. In harpe_synthesize_context a lower priority number is more important (0 to 100). The three skills name only the tools the hosted server has."
       }
     }
   }
