@@ -2,11 +2,11 @@
 
 ## A record passed to `kibisis_resolve_memory`
 
-- `key` (required): identifier of the record.
+- `key` (required): identifier of the record. A key occurs once per category; two records with the same category and key are refused (`DuplicateRecordKeyError`).
 - `content` (required): the text.
 - `category`: taxonomy label; `decision` when left out.
 - `epistemic_state`: `candidate`, `verified`, `disputed` or `revoked`; `candidate` when left out.
-- `supersedes_key`: the key of the record this one replaces.
+- `supersedes_key`: the key of the record this one replaces. It applies to every record with that key. A key that names no record of the call is allowed and comes back in `unresolved_supersedes`. Records that supersede each other in a loop are refused (`SupersessionLoopError`), because none of them could be active.
 
 Any other field is refused.
 
