@@ -44,6 +44,9 @@ HARNESS = r"""
     budget: String(document.getElementById('budget-val').textContent),
     kibisis_meta: document.getElementById('kibisis-meta').textContent,
     status: document.getElementById('status-badge').textContent,
+    sources: ['harpe', 'kibisis', 'argus'].map(tab => document.getElementById(tab + '-source').textContent),
+    slider: (({min, max, value}) => ({min, max, value}))(document.getElementById('budget-slider')),
+    kibisis: document.getElementById('kibisis-items').children.map(c => c.innerHTML),
   });
   const out = [{step: 'open', calls: 0, ...snap()}];
   for (const step of input.steps) {
@@ -70,6 +73,17 @@ def opened(arguments=None):
 
 def page() -> str:
     return node("done(edge.html);")
+
+
+def test_every_element_the_script_looks_up_is_in_the_markup():
+    # a wrong id passes in node, where the stand-in makes any element asked for, and throws at load in a browser
+    html = page()
+    script = re.search(r"<script[^>]*>([\s\S]*?)</script>", html).group(1)
+    markup = html[: html.index("<script")]
+    asked = set(re.findall(r'getElementById\("([^"]+)"\)', script))
+    assert asked and not [name for name in sorted(asked) if f'id="{name}"' not in markup]
+    for tab in ("harpe", "kibisis", "argus"):  # looked up with a computed id in this test's harness only
+        assert f'id="{tab}-source"' in markup
 
 
 def test_the_page_opens_with_a_sealed_chain_and_does_not_call_it_verified():

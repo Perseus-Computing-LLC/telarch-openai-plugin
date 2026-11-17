@@ -1,0 +1,125 @@
+{
+  "status": "inspector_ready",
+  "harpe": {
+    "total_budget": 3640,
+    "effective_budget": 56,
+    "consumed_tokens": 38,
+    "pruned_tokens": 46,
+    "utilization_pct": 67.86,
+    "pinned_policy_digest": "cafe934dfa8d52cab4344dc561586dbd21abc66489654f54d38327e5dda5cbce",
+    "policy": "knapsack_dp",
+    "items": [
+      {
+        "id": "sys_invariants",
+        "content": "Enforce SQLCipher encryption and monotonic fencing tokens on every write.",
+        "role": "context",
+        "priority": 0,
+        "pinned": true,
+        "tokens": 19,
+        "status": "INCLUDED (PINNED)"
+      },
+      {
+        "id": "arch_decision",
+        "content": "Use the exact knapsack DP for deterministic context packing under budget.",
+        "role": "context",
+        "priority": 10,
+        "pinned": false,
+        "tokens": 19,
+        "status": "INCLUDED (KNAPSACK)"
+      },
+      {
+        "id": "stale_scratch",
+        "content": "Verbose historical debug trace from the deprecated prototype build: retry loop dumps, allocator statistics and unfiltered request logs, kept for reference only and safe to drop first.",
+        "role": "context",
+        "priority": 85,
+        "pinned": false,
+        "tokens": 46,
+        "status": "PRUNED"
+      }
+    ]
+  },
+  "kibisis": {
+    "active_scope": "default",
+    "query": "SQLCipher encryption",
+    "records": [
+      {
+        "key": "db_engine_v1",
+        "category": "decision",
+        "content": "Use unencrypted SQLite for local storage.",
+        "epistemic_state": "verified",
+        "status": "SUPERSEDED"
+      },
+      {
+        "key": "db_engine_v2",
+        "category": "decision",
+        "content": "Use SQLCipher AES-256 with PBKDF2-HMAC-SHA512 (256,000 iterations).",
+        "epistemic_state": "verified",
+        "supersedes_key": "db_engine_v1",
+        "status": "ACTIVE"
+      },
+      {
+        "key": "temp_override",
+        "category": "convention",
+        "content": "Allow plaintext fallback in production.",
+        "epistemic_state": "revoked",
+        "status": "TOMBSTONED (REVOKED)"
+      }
+    ],
+    "envelope": "<kibisis-recall trust=\"untrusted-stored-text\" scope=\"default\">\n- [decision/db_engine_v2] (verified): Use SQLCipher AES-256 with PBKDF2-HMAC-SHA512 (256,000 iterations).\n</kibisis-recall>"
+  },
+  "argus": {
+    "valid": true,
+    "total_events": 3,
+    "root_hash": "26fed160404022047c0fe2c7f18eb8f7f49f997d9bb59f27497b6d181aa36cfb",
+    "head_hash": "751d0246915ff68c0f76082d8df81bf70d297ad06419d1ebd885c3dfd2323065",
+    "first_broken_sequence": null,
+    "first_broken_index": null,
+    "error_detail": null,
+    "anchor_prev_hash": "GENESIS",
+    "starts_at_genesis": true,
+    "events": [
+      {
+        "sequence": 1,
+        "event_id": "evt_0001",
+        "event_type": "kibisis.lease.acquire",
+        "actor": "worker-a",
+        "timestamp": "2026-11-04T00:00:01Z",
+        "payload": {
+          "fencing_token": 1,
+          "ttl_s": 30
+        },
+        "canonical_payload": "{\"fencing_token\":1,\"ttl_s\":30}",
+        "prev_hash": "GENESIS",
+        "event_hash": "26fed160404022047c0fe2c7f18eb8f7f49f997d9bb59f27497b6d181aa36cfb"
+      },
+      {
+        "sequence": 2,
+        "event_id": "evt_0002",
+        "event_type": "harpe.context.pack",
+        "actor": "worker-a",
+        "timestamp": "2026-11-04T00:00:02Z",
+        "payload": {
+          "consumed_tokens": 38,
+          "savings_bp": 5476
+        },
+        "canonical_payload": "{\"consumed_tokens\":38,\"savings_bp\":5476}",
+        "prev_hash": "26fed160404022047c0fe2c7f18eb8f7f49f997d9bb59f27497b6d181aa36cfb",
+        "event_hash": "4f53b01e1b830ebf8e2666f22109701f09e55ae60877b0e61813314a11fd0a3f"
+      },
+      {
+        "sequence": 3,
+        "event_id": "evt_0003",
+        "event_type": "kibisis.vault.write",
+        "actor": "worker-a",
+        "timestamp": "2026-11-04T00:00:03Z",
+        "payload": {
+          "fencing_token": 1,
+          "key": "db_engine_v2"
+        },
+        "canonical_payload": "{\"fencing_token\":1,\"key\":\"db_engine_v2\"}",
+        "prev_hash": "4f53b01e1b830ebf8e2666f22109701f09e55ae60877b0e61813314a11fd0a3f",
+        "event_hash": "751d0246915ff68c0f76082d8df81bf70d297ad06419d1ebd885c3dfd2323065"
+      }
+    ]
+  }
+}

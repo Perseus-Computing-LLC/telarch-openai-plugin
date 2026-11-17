@@ -19,5 +19,5 @@ Verify that the local Telarch server (Kibisis memory vault, Harpe context budget
 - Do not invent vault entries, hashes or budget figures; report what the tools return.
 - `kibisis_remember` always stores a `candidate`. It has no argument that sets a trust state; only a person can verify an entry, at a terminal, with `python3 -m kibisis.review`.
 - If `vault_storage.mode` is `plain`, say so. Do not describe the vault as encrypted.
-- A call with an argument the tool does not declare is refused (JSON-RPC error -32602); nothing is stored or changed by a refused call.
+- A call with an argument the tool does not declare is refused (JSON-RPC error -32602, with the argument's path in `error.data.path`); nothing is stored or changed by a refused call. A call a rule refuses has `isError: true` and `structuredContent.error` with a `code` that does not change between versions.
 - See [Configuration Reference](references/config.md) for the data folder, the key file and the environment variables.
