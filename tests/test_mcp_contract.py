@@ -60,7 +60,7 @@ def test_edge_and_local_initialize_and_tools_list(tmp_path, monkeypatch):
     # one version for the two servers and the two plugin manifests, so a client can tell which code it is talking to
     manifests = [json.loads((ROOT / "plugins" / name / "plugin.json").read_text(encoding="utf-8"))["version"] for name in ("telarch", "telarch-local")]
     versions = {local_init["result"]["serverInfo"]["version"], edge_init["result"]["serverInfo"]["version"], *manifests}
-    assert versions == {"0.2.3"}, versions
+    assert versions == {"0.3.0"}, versions
     # OpenAI's package check for a new version of the listed plugin (2026-11-16): "Remove interface.screenshots
     # from the plugin manifest". Neither manifest may carry the key.
     for name in ("telarch", "telarch-local"):

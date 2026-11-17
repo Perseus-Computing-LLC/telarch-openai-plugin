@@ -28,6 +28,31 @@ A call above a limit is refused with an error that names the limit; nothing is c
 
 ## Errors
 
-- Unknown tool, or arguments that do not match the tool's input schema: JSON-RPC error -32602.
+- Unknown tool: JSON-RPC error -32602.
+- Arguments that do not match the tool's input schema: JSON-RPC error -32602 with `error.data = {"code": "InvalidArguments", "path": ...}`. `path` is written from the arguments, as in `items[0].role`; it is `""` when the arguments object itself is at fault (an undeclared argument, or arguments that are not an object).
 - A message that is not a valid JSON-RPC request: -32600.
-- A rule of the tool refuses the call (for example `ScopeIsolationError`, `EpistemicTrustViolation`, `StaleFencingTokenError`, `FloatPayloadError`): a tool result with `isError: true` and the rule's own sentence.
+- A rule of the tool refuses the call: a tool result with `isError: true`, the rule's own sentence as text, and `structuredContent.error = {"code", "path", "message"}`. `message` is that sentence. `path` names the argument at fault and is `null` when no single argument is.
+
+The codes do not change between versions; a code is the error name its sentence starts with, without a trailing `Error`.
+
+| code | refused because | path |
+|---|---|---|
+| `InvalidArguments` | the arguments do not match the input schema (error -32602) | the value at fault |
+| `FloatPayload` | a payload holds a number that is not an integer | the number, as in `events[0].payload.n` |
+| `UnsafeInteger` | a payload holds an integer beyond 2**53 - 1 | the number |
+| `PayloadTooDeep`, `UnsupportedPayload` | a payload is nested too deeply, or holds a value JSON cannot carry | the value |
+| `PrevHashFormat` | `prev_hash` is not 64 lowercase hex characters or `GENESIS` | `prev_hash` |
+| `SequenceRequired` | a chain continued from a `prev_hash` has no `sequence` on its first event | `events[0].sequence` |
+| `SequenceOrder` | a `sequence` does not follow the one before it | that `sequence` |
+| `DuplicateItemId` | two items share an id | the second `id` |
+| `KnapsackTooLarge` | `knapsack_dp` would need more than 4,000,000 table cells | `null` |
+| `UnknownPolicy` | the policy is not one the server has | `policy` |
+| `ScopeIsolation` | `requested_scope` differs from `active_scope` | `requested_scope` |
+| `EpistemicTrustViolation` | a write with origin `model` asks for `verified` | `write_attempt.epistemic_state` |
+| `DuplicateRecordKey` | two records share category and key | the second `key` |
+| `SupersessionLoop` | records supersede each other in a loop | one `supersedes_key` of the loop |
+| `StaleFencingToken` | the token is below `highest_token_seen` | `fencing_token` |
+| `LeaseClockMissing` | an expiry was given without `now_epoch` | `now_epoch` |
+| `LeaseExpired` | the lease expired before `now_epoch` | `lease_expires_epoch` |
+
+A chain that fails `argus_audit_verify` is not a refusal: the call succeeds and reports `valid: false` with `first_broken_sequence` and `error_detail`.

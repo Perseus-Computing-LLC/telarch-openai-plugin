@@ -142,9 +142,11 @@ def test_a_knapsack_above_the_stated_limit_is_refused_by_both_and_names_the_limi
     edge_answer = edge_rpc_many([_request("harpe_synthesize_context", args)])[0]
     local_answer = local.handle_request(_request("harpe_synthesize_context", args))
     for answer in (edge_answer, local_answer):
-        assert answer["result"]["isError"] is True and "structuredContent" not in answer["result"]
+        # a refusal carries no packing result: its structuredContent holds the error and nothing else
+        assert answer["result"]["isError"] is True and set(answer["result"]["structuredContent"]) == {"error"}
         assert "max_knapsack_cells=4000000" in answer["result"]["content"][0]["text"]
     assert edge_answer["result"]["content"][0]["text"] == local_answer["result"]["content"][0]["text"]
+    assert edge_answer["result"]["structuredContent"] == local_answer["result"]["structuredContent"]
     # the same items under a policy with no table are packed, by both, identically
     cheap = dict(args, policy="lowest_priority")
     e = edge_rpc_many([_request("harpe_synthesize_context", cheap)])[0]["result"]["structuredContent"]
