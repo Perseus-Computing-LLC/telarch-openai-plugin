@@ -51,6 +51,10 @@ def test_without_data_the_inspector_shows_what_0_2_3_showed_and_says_it_is_a_dem
     now = opened()
     assert now.pop("data_source") == {"harpe": "demonstration", "kibisis": "demonstration", "argus": "demonstration"}
     assert now["harpe"].pop("reserves") == {"reserved_completion": 2048, "reserved_tools": 1024, "safety_margin": 512}
+    # 0.3.1 (issue 17) adds the reserve and overflow fields of harpe_synthesize_context; nothing else changed.
+    added = {k: now["harpe"].pop(k) for k in ("reserved_total", "reserves_exceed_budget", "shortfall_tokens", "control_overflow", "over_budget", "overflow_tokens")}
+    assert added == {"reserved_total": 3584, "reserves_exceed_budget": False, "shortfall_tokens": 0,
+                     "control_overflow": False, "over_budget": False, "overflow_tokens": 0}
     assert now == json.loads((FIXTURES / "inspector_default_0_2_3.json").read_text(encoding="utf-8"))
 
 

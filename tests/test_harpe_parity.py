@@ -13,7 +13,8 @@ import pytest
 from telarch_testlib import edge_rpc_many, isolate_environment, load_local_module, rejected
 
 POLICIES = ["knapsack_dp", "lowest_priority", "fifo", "warm_prefix"]
-COMPARED = ["policy_applied", "total_budget", "effective_budget", "consumed_tokens", "pruned_tokens", "control_overflow",
+COMPARED = ["policy_applied", "total_budget", "effective_budget", "reserved_total", "reserves_exceed_budget", "shortfall_tokens",
+            "consumed_tokens", "pruned_tokens", "control_overflow",
             "pinned_policy_digest", "included_ids", "pruned_ids"]
 WORDS = ["alpha", "beta_gamma", "x", "deadbeefcafe0123", "0123456789abcdef0123", "naïve", "日本語のテキスト", "🙂", "a.b,c;d",
          "Zürich", "snake_case_name", "ΑΒΓ", "tab\tsep", "line\nbreak", "nbsp\u00a0here", "thin\u2009space", "zero\u200bwidth",

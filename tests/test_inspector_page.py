@@ -41,6 +41,8 @@ HARNESS = r"""
     events: document.getElementById('argus-events').children.map(c => c.innerHTML),
     harpe: document.getElementById('harpe-items').children.map(c => c.innerHTML),
     harpe_summary: document.getElementById('harpe-summary').textContent,
+    harpe_warning: document.getElementById('harpe-warning').textContent,
+    harpe_bar: {width: document.getElementById('harpe-bar').style.width, className: document.getElementById('harpe-bar').className},
     budget: String(document.getElementById('budget-val').textContent),
     kibisis_meta: document.getElementById('kibisis-meta').textContent,
     status: document.getElementById('status-badge').textContent,
